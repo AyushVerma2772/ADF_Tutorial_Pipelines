@@ -1,0 +1,87 @@
+{
+	"name": "008_dataflow",
+	"properties": {
+		"description": "Lookup Transformation",
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_adls_csv_orders_file",
+						"type": "DatasetReference"
+					},
+					"name": "srcOrders"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_adls_csv_cust_file",
+						"type": "DatasetReference"
+					},
+					"name": "srcCust"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_adls_csv_output",
+						"type": "DatasetReference"
+					},
+					"name": "sink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "lookup"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          order_id as string,",
+				"          customer_id as string,",
+				"          product_id as string,",
+				"          order_date as date,",
+				"          quantity as short,",
+				"          total_amount as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> srcOrders",
+				"source(output(",
+				"          customer_id as string,",
+				"          first_name as string,",
+				"          last_name as string,",
+				"          email as string,",
+				"          city as string,",
+				"          state as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> srcCust",
+				"srcOrders, srcCust lookup(srcOrders@customer_id == srcCust@customer_id,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> lookup",
+				"lookup sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     filePattern:'orders_lookup_cust.csv',",
+				"     umask: 0777,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          order_id,",
+				"          customer_id = srcOrders@customer_id,",
+				"          order_date,",
+				"          quantity,",
+				"          total_amount,",
+				"          first_name,",
+				"          last_name,",
+				"          email,",
+				"          city,",
+				"          state",
+				"     )) ~> sink"
+			]
+		}
+	}
+}

@@ -1,0 +1,38 @@
+{
+	"name": "022_pipeline",
+	"properties": {
+		"description": "aggregate transformation",
+		"activities": [
+			{
+				"name": "Data flow",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "006_dataflow",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "Transformations"
+		},
+		"annotations": [],
+		"lastPublishTime": "2026-09-20T13:12:00Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

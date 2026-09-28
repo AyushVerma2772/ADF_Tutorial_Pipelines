@@ -1,0 +1,79 @@
+{
+	"name": "007_dataflow",
+	"properties": {
+		"description": "Rank and Window Transformation",
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_adls_csv_orders_file",
+						"type": "DatasetReference"
+					},
+					"name": "srcOrders"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_adls_csv_output",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_adls_csv_output",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "rank"
+				},
+				{
+					"name": "window"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          order_id as string,",
+				"          customer_id as string,",
+				"          product_id as string,",
+				"          order_date as date,",
+				"          quantity as short,",
+				"          total_amount as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> srcOrders",
+				"srcOrders rank(desc(total_amount, true),",
+				"     output(rnk as long),",
+				"     dense: true) ~> rank",
+				"srcOrders window(over(year = year(order_date),",
+				"          month = month(order_date)),",
+				"     desc(total_amount, true),",
+				"     rnk = rank(),",
+				"          pre_amount = lag(total_amount)) ~> window",
+				"window sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     filePattern:'orders_rank',",
+				"     umask: 0777,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1",
+				"rank sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     filePattern:'orders_window',",
+				"     umask: 0777,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink2"
+			]
+		}
+	}
+}

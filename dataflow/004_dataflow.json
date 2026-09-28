@@ -1,0 +1,65 @@
+{
+	"name": "004_dataflow",
+	"properties": {
+		"description": "Filter transformation\nDerived column transformation",
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_adls_csv_orders_file",
+						"type": "DatasetReference"
+					},
+					"name": "srcOrders"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_adls_csv_output",
+						"type": "DatasetReference"
+					},
+					"name": "tgtOrders",
+					"rejectedDataLinkedService": {
+						"referenceName": "ls_adls",
+						"type": "LinkedServiceReference"
+					}
+				}
+			],
+			"transformations": [
+				{
+					"name": "filter"
+				},
+				{
+					"name": "derivedColumn"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          order_id as string,",
+				"          customer_id as string,",
+				"          product_id as string,",
+				"          order_date as date,",
+				"          quantity as short,",
+				"          total_amount as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> srcOrders",
+				"srcOrders filter(quantity >= 2) ~> filter",
+				"filter derive(month = month(order_date),",
+				"          month_name = toString(order_date, 'MMM'),",
+				"          year = year(order_date),",
+				"          day = dayOfMonth(order_date)) ~> derivedColumn",
+				"derivedColumn sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     filePattern:'df_orders.csv',",
+				"     umask: 0777,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> tgtOrders"
+			]
+		}
+	}
+}

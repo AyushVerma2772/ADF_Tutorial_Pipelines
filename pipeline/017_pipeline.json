@@ -1,0 +1,38 @@
+{
+	"name": "017_pipeline",
+	"properties": {
+		"description": "Dataflow activity",
+		"activities": [
+			{
+				"name": "Data flow",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "001_dataflow",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "Transformations"
+		},
+		"annotations": [],
+		"lastPublishTime": "2026-09-20T07:10:52Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

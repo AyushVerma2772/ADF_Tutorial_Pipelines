@@ -1,0 +1,28 @@
+{
+	"name": "011_pipeline",
+	"properties": {
+		"description": "validation Activity",
+		"activities": [
+			{
+				"name": "Validation",
+				"type": "Validation",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ds_azure_db",
+						"type": "DatasetReference",
+						"parameters": {
+							"table_name": "persons"
+						}
+					},
+					"timeout": "0.00:00:05",
+					"sleep": 10
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2026-09-19T17:51:35Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,62 @@
+{
+	"name": "008_pipeline",
+	"properties": {
+		"description": "filter Activity",
+		"activities": [
+			{
+				"name": "Lookup orders_new",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "ds_azure_db",
+						"type": "DatasetReference",
+						"parameters": {
+							"table_name": "orders_new"
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Filter quantity",
+				"type": "Filter",
+				"dependsOn": [
+					{
+						"activity": "Lookup orders_new",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Lookup orders_new').output.value",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@greater(item().qnt, 3)",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2026-09-19T07:11:36Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

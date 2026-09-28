@@ -1,0 +1,58 @@
+{
+	"name": "003_dataflow",
+	"properties": {
+		"description": "sort Transformation",
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_adls_csv_orders_file",
+						"type": "DatasetReference"
+					},
+					"name": "srcOrders"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_azure_db_orders",
+						"type": "DatasetReference"
+					},
+					"name": "tgtOrders"
+				}
+			],
+			"transformations": [
+				{
+					"name": "sort"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          order_id as string,",
+				"          customer_id as string,",
+				"          product_id as string,",
+				"          order_date as date,",
+				"          quantity as short,",
+				"          total_amount as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> srcOrders",
+				"srcOrders sort(desc(total_amount, false),",
+				"     asc(quantity, false)) ~> sort",
+				"sort sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     preSQLs:['TRUNCATE TABLE dbo.df_orders'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> tgtOrders"
+			]
+		}
+	}
+}

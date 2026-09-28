@@ -1,0 +1,19 @@
+{
+	"name": "ds_api_dummy_json_todos",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_dummy_json",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation",
+				"relativeUrl": "todos"
+			}
+		},
+		"schema": {}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

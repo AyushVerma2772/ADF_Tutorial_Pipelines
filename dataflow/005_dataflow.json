@@ -1,0 +1,72 @@
+{
+	"name": "005_dataflow",
+	"properties": {
+		"description": "conditionalSplit Transformation",
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_adls_csv_orders_file",
+						"type": "DatasetReference"
+					},
+					"name": "source"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_adls_csv_output",
+						"type": "DatasetReference"
+					},
+					"name": "orderyear2023"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_adls_csv_output",
+						"type": "DatasetReference"
+					},
+					"name": "orderyear2024"
+				}
+			],
+			"transformations": [
+				{
+					"name": "split"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          order_id as string,",
+				"          customer_id as string,",
+				"          product_id as string,",
+				"          order_date as date,",
+				"          quantity as short,",
+				"          total_amount as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source",
+				"source split(year(order_date) == 2023,",
+				"     year(order_date) == 2024,",
+				"     disjoint: false) ~> split@(year2023, year2024)",
+				"split@year2023 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     filePattern:'orderyear2023.csv',",
+				"     umask: 0777,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     quoteAll: true) ~> orderyear2023",
+				"split@year2024 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     filePattern:'orderyear2024.csv',",
+				"     umask: 0777,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> orderyear2024"
+			]
+		}
+	}
+}

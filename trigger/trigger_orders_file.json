@@ -1,0 +1,28 @@
+{
+	"name": "trigger_orders_file",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "026_pipeline",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"file_name": "orders.csv"
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/adf-container/blobs/input",
+			"blobPathEndsWith": ".csv",
+			"ignoreEmptyBlobs": true,
+			"scope": "/subscriptions/192d2855-2b3c-4dc5-a587-34f1c85efdc9/resourceGroups/rg_practice_av/providers/Microsoft.Storage/storageAccounts/sapracticeav",
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}

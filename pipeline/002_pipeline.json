@@ -1,0 +1,82 @@
+{
+	"name": "002_pipeline",
+	"properties": {
+		"description": "This pipeline demonstrates set Variables Active",
+		"activities": [
+			{
+				"name": "Set variable name",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "name",
+					"value": "Ayush"
+				}
+			},
+			{
+				"name": "Set variable country",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set variable name",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "country",
+					"value": "India"
+				}
+			},
+			{
+				"name": "Set variable time",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set variable country",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "time",
+					"value": {
+						"value": "@utcNow()",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"country": {
+				"type": "String",
+				"defaultValue": "India"
+			},
+			"name": {
+				"type": "String"
+			},
+			"time": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2026-09-18T08:38:20Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
