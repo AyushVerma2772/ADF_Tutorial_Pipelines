@@ -1,0 +1,36 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "adf-practice-av"
+		},
+		"ls_adls_accountKey": {
+			"value": ""
+		},
+		"ls_azure_db_password": {
+			"value": ""
+		},
+		"ls_adls_properties_typeProperties_url": {
+			"value": "https://sapracticeav.dfs.core.windows.net/"
+		},
+		"ls_azure_db_properties_typeProperties_server": {
+			"value": "server-practice-av.database.windows.net"
+		},
+		"ls_azure_db_properties_typeProperties_database": {
+			"value": "sql_db_practice_av"
+		},
+		"ls_azure_db_properties_typeProperties_userName": {
+			"value": "ayush"
+		},
+		"ls_dummy_json_properties_typeProperties_url": {
+			"value": "https://dummyjson.com/"
+		},
+		"trigger_orders_file_properties_026_pipeline_parameters_file_name": {
+			"value": "orders.csv"
+		},
+		"trigger_orders_file_properties_typeProperties_scope": {
+			"value": "/subscriptions/192d2855-2b3c-4dc5-a587-34f1c85efdc9/resourceGroups/rg_practice_av/providers/Microsoft.Storage/storageAccounts/sapracticeav"
+		}
+	}
+}
